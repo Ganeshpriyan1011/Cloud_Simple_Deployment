@@ -13,26 +13,22 @@ jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Deploy Single HTML File
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: true
-          lfs: false
 
-      - name: Deploy Static HTML Site
-        id: builddeploy
+      - name: Deploy HTML File to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NICE_MUSHROOM_0E420BF00 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
-          ###### Repository/Build Configurations ######
-          app_location: "/"       # The folder where index.html is located
-          api_location: ""         # No API folder
-          output_location: "/"     # No build output — just deploy from root
-          skip_app_build: true     # <--- prevents Oryx from trying to "build"
-          ###### End of Configurations ######
+
+          # Since you have only one index.html file, everything is in the root directory
+          app_location: "/"          # Folder where your index.html lives
+          output_location: "/"       # Same as app_location — no build output
+          skip_app_build: true       # Skip build, directly deploy file
+          api_location: ""           # No backend API folder
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -40,7 +36,6 @@ jobs:
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
-        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_NICE_MUSHROOM_0E420BF00 }}
