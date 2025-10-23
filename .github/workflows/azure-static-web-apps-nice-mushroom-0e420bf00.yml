@@ -24,11 +24,10 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
 
-          # Since you have only one index.html file, everything is in the root directory
-          app_location: "/"          # Folder where your index.html lives
-          output_location: "/"       # Same as app_location — no build output
-          skip_app_build: true       # Skip build, directly deploy file
-          api_location: ""           # No backend API folder
+          app_location: "/"          # Root directory
+          output_location: "/"       # Same folder (no build)
+          skip_app_build: true       # Skip Oryx build step
+          api_location: ""           # No API backend
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
