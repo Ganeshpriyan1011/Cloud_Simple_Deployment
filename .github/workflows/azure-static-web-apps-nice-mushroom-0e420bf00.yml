@@ -13,21 +13,9 @@ jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Deploy Simple HTML File
+    name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
-
-      - name: Create routes.json for Simple.html
-        run: |
-          echo '{
-            "routes": [
-              {
-                "route": "/*",
-                "serve": "/Simple.html",
-                "statusCode": 200
-              }
-            ]
-          }' > routes.json
 
       - name: Deploy to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
@@ -36,9 +24,14 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
 
+          # Your index.html is in the root directory
           app_location: "/"
           output_location: "/"
+
+          # No build needed for plain HTML
           skip_app_build: true
+
+          # No API backend
           api_location: ""
 
   close_pull_request_job:
